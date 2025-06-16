@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            
             "outputPath": "dist/teshub",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -58,7 +59,12 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+          "browserTarget": "Teshub:build",
+          "port": 4201
+        },
           "configurations": {
+            
             "production": {
               "browserTarget": "Teshub:build:production"
             },
@@ -94,5 +100,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "310d6b32-9f21-428f-a284-6cf7ee761498"
   }
 }
