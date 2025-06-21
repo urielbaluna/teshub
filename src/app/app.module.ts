@@ -5,18 +5,33 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RecuperacionComponent } from './components/recuperacion/recuperacion.component';
+import { ActualizarcontrasenaComponent } from './components/actualizarcontrasena/actualizarcontrasena.component';
+import { ActualizardatosComponent } from './components/actualizardatos/actualizardatos.component';
 import { CrearcuentaComponent } from './components/crearcuenta/crearcuenta.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RecuperacionComponent,
-    CrearcuentaComponent
+    ActualizarcontrasenaComponent,
+    ActualizardatosComponent,
+    CrearcuentaComponent,
+    
+    
+   
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

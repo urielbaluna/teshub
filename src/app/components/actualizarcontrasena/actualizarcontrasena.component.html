@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Teshub</title>
+  <title>Actualizar Contraseña - Teshub</title>
   <style>
     body {
       background-color: #e6e6e6;
@@ -15,7 +15,7 @@
       margin: 0;
     }
 
-    .login-container {
+    .container {
       background-color: white;
       padding: 40px 30px;
       border-radius: 20px;
@@ -43,27 +43,35 @@
 
     .input-group {
       position: relative;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
     .input-group input {
-      width: 80%;
-      padding: 15px 15px 12px 40px;
+      width: 85%;
+      padding: 10px 10px 10px 40px;
       border: none;
       background-color: #e6e6e6;
-      border-radius: 20px;
+      border-radius: 10px;
       font-size: 14px;
     }
 
     .input-group i {
       position: absolute;
       top: 50%;
-      left: 10px;
+      left: 12px;
       transform: translateY(-50%);
       color: #555;
     }
 
-    .btn-login {
+    .label-text {
+      text-align: left;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .btn-update {
       background-color: #2ca646;
       color: white;
       padding: 12px;
@@ -75,47 +83,34 @@
       font-weight: bold;
       margin-top: 10px;
     }
-
-    .login-footer {
-      font-size: 12px;
-      margin-top: 15px;
-      color: #333;
-    }
-
-    .login-footer a {
-      color: #000;
-      text-decoration: none;
-      display: block;
-      margin-top: 4px;
-    }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
-  <div class="logo">
-    <span>tes</span><span>hub</span>
-  </div>
-  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-    <div class="input-group">
-      <i>📧</i>
-      <input type="email" placeholder="CORREO ELECTRONICO" required [(ngModel)]="correo" name="correo">
+  <div class="container">
+    <div class="logo">
+      <span>tes</span><span>hub</span>
     </div>
+    
+    <div class="input-group">
+      <i>#</i>
+      <input type="text" placeholder="CÓDIGO DE SEGURIDAD" required>
+    </div>
+
+    <div class="label-text">Ingresa tu nueva contraseña:</div>
+
     <div class="input-group">
       <i>🔒</i>
-      <input type="password" placeholder="CONTRASEÑA" required [(ngModel)]="contrasena" name="contrasena">
+      <input type="password" placeholder="CONTRASEÑA NUEVA" required>
     </div>
-    <button class="btn-login" type="submit" [disabled]="loginForm.invalid">ACCEDER</button>
-    <div *ngIf="mensaje">{{ mensaje }}</div>
-  </form>
-  <div class="login-footer">
-    <a routerLink="//actualizarcontrasena">¿Olvidaste tu contraseña?</a>
-    <br>
-    o
-    <br>
-    <a routerLink="/crearcuenta">Crear cuenta nueva</a>
+
+    <div class="input-group">
+      <i>🔒</i>
+      <input type="password" placeholder="REESCRIBE TÚ CONTRASEÑA NUEVA" required>
+    </div>
+
+    <button class="btn-update">ACTUALIZAR</button>
   </div>
-</div>
 
 </body>
 </html>

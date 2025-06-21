@@ -1,1 +1,103 @@
-<p>recuperacion works!</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recuperar Código</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .logo b {
+      font-weight: 900;
+      color: #333;
+    }
+
+    .logo .green {
+      background-color: #28a745;
+      color: white;
+      padding: 0 8px;
+      border-radius: 5px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      background: #ddd;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-group i {
+      margin-right: 10px;
+    }
+
+    .input-group input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      outline: none;
+    }
+
+    .btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #218838;
+    }
+  </style>
+  <!-- Iconos FontAwesome (si los usas) -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="card">
+    <div class="logo"><b>tes</b><span class="green">hub</span></div>
+    <p>Ingresa tu correo registrado para recuperar tu cuenta:</p>
+
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" placeholder="Correo electrónico" />
+    </div>
+
+    
+
+    <button class="btn">MANDAR</button>
+  </div>
+</body>
+</html>
