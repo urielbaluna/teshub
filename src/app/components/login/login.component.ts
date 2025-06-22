@@ -33,7 +33,8 @@ export class LoginComponent {
         publicaciones: 0, // Puedes calcularlo después
         destacada: respuesta.destacada || '', // Si existe
         rol: respuesta.rol || 'Estudiante',   // Si existe
-        foto: 'assets/img/brian.png' // O la ruta que corresponda
+        foto: respuesta.imagen && respuesta.imagen.trim() !== '' ? respuesta.imagen : 'assets/img/brian.png',
+        token: respuesta.token
       };
 
       localStorage.setItem('usuario', JSON.stringify(usuario));

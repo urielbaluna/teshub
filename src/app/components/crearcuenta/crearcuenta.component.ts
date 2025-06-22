@@ -1,16 +1,13 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; 
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  
   templateUrl: './crearcuenta.component.html',
   styleUrls: ['./crearcuenta.component.css']
 })
 export class CrearcuentaComponent {
- 
   nombre = '';
   apellido = '';
   correo = '';
@@ -18,7 +15,7 @@ export class CrearcuentaComponent {
   contrasena = '';
   mensaje = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {} // <--- agrega aquí el Router
 
   onSubmit() {
     const datos = {
@@ -33,7 +30,9 @@ export class CrearcuentaComponent {
       .subscribe({
         next: (respuesta: any) => {
           this.mensaje = 'Cuenta creada exitosamente';
-          
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
           console.log(respuesta);
         },
         error: (error) => {
