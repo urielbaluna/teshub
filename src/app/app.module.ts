@@ -11,7 +11,8 @@ import { CrearcuentaComponent } from './components/crearcuenta/crearcuenta.compo
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CorreorecuperacionComponent } from './components/correorecuperacion/correorecuperacion.component';
-
+import { HomeComponent } from './components/home/home.component';
+import { CrearPublicacionComponent } from './components/crear-publicacion/crear-publicacion.component';
 
 @NgModule({
   declarations: [
@@ -22,16 +23,14 @@ import { CorreorecuperacionComponent } from './components/correorecuperacion/cor
     ActualizardatosComponent,
     CrearcuentaComponent,
     CorreorecuperacionComponent,
-
-    
-   
+    HomeComponent,
+    CrearPublicacionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule,
-    
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
