@@ -13,8 +13,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { CorreorecuperacionComponent } from './components/correorecuperacion/correorecuperacion.component';
 
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,7 +22,7 @@ import { CorreorecuperacionComponent } from './components/correorecuperacion/cor
     ActualizardatosComponent,
     CrearcuentaComponent,
     CorreorecuperacionComponent,
-    
+
     
    
   ],
