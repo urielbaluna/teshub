@@ -88,29 +88,30 @@
 <body>
 
   <div class="container">
-    <div class="logo">
-      <span>tes</span><span>hub</span>
-    </div>
-    
-    <div class="input-group">
-      <i>#</i>
-      <input type="text" placeholder="CÓDIGO DE SEGURIDAD" required>
-    </div>
-
-    <div class="label-text">Ingresa tu nueva contraseña:</div>
-
-    <div class="input-group">
-      <i>🔒</i>
-      <input type="password" placeholder="CONTRASEÑA NUEVA" required>
-    </div>
-
-    <div class="input-group">
-      <i>🔒</i>
-      <input type="password" placeholder="REESCRIBE TÚ CONTRASEÑA NUEVA" required>
-    </div>
-
-    <button class="btn-update">ACTUALIZAR</button>
+  <div class="logo">
+    <span>tes</span><span>hub</span>
   </div>
+  
+  <div class="input-group">
+    <i>#</i>
+    <input type="text" placeholder="CÓDIGO DE SEGURIDAD" required [(ngModel)]="codigo" name="codigo">
+  </div>
+
+  <div class="label-text">Ingresa tu nueva contraseña:</div>
+
+  <div class="input-group">
+    <i>🔒</i>
+    <input type="password" placeholder="CONTRASEÑA NUEVA" required [(ngModel)]="contrasena1" name="contrasena1">
+  </div>
+
+  <div class="input-group">
+    <i>🔒</i>
+    <input type="password" placeholder="REESCRIBE TÚ CONTRASEÑA NUEVA" required [(ngModel)]="contrasena2" name="contrasena2">
+  </div>
+
+  <button class="btn-update" (click)="actualizarContrasena()">ACTUALIZAR</button>
+  <div *ngIf="mensaje" style="margin-top: 10px; color: red;">{{ mensaje }}</div>
+</div>
 
 </body>
 </html>

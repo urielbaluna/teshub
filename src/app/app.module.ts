@@ -10,6 +10,7 @@ import { ActualizardatosComponent } from './components/actualizardatos/actualiza
 import { CrearcuentaComponent } from './components/crearcuenta/crearcuenta.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { CorreorecuperacionComponent } from './components/correorecuperacion/correorecuperacion.component';
 
 
 
@@ -22,6 +23,7 @@ import { HttpClientModule } from '@angular/common/http';
     ActualizarcontrasenaComponent,
     ActualizardatosComponent,
     CrearcuentaComponent,
+    CorreorecuperacionComponent,
     
     
    
