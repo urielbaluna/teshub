@@ -44,10 +44,13 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.publicaciones = this.publicacionesService.obtenerPublicaciones();
-    this.usuario = this.usuarioService.getUsuario();
-    this.actualizarNumeroPublicaciones();
+  this.publicaciones = this.publicacionesService.obtenerPublicaciones();
+  const usuarioGuardado = localStorage.getItem('usuario');
+  if (usuarioGuardado && usuarioGuardado !== 'undefined') {
+    this.usuario = JSON.parse(usuarioGuardado);
   }
+  this.actualizarNumeroPublicaciones();
+}
 
   irACrearPublicacion() {
     this.router.navigate(['/crear-publicacion']);
