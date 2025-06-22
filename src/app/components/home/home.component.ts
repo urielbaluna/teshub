@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PublicacionesService } from '../../services/publicaciones.service';
 import { UsuarioService } from '../../services/usuario.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-home',
@@ -40,7 +42,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private router: Router,
     private publicacionesService: PublicacionesService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -48,6 +51,22 @@ export class HomeComponent implements OnInit {
   const usuarioGuardado = localStorage.getItem('usuario');
   if (usuarioGuardado && usuarioGuardado !== 'undefined') {
     this.usuario = JSON.parse(usuarioGuardado);
+
+    // Si hay token, pide la info real (incluida la foto)
+    if (this.usuario.token) {
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${this.usuario.token}`
+      });
+      this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+        .subscribe((info: any) => {
+          // Actualiza la foto si viene en la respuesta
+          if (info.imagen && info.imagen.trim() !== '') {
+            this.usuario.foto = `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`;
+            // Actualiza en localStorage para otros componentes
+            localStorage.setItem('usuario', JSON.stringify(this.usuario));
+          }
+        });
+    }
   }
   this.actualizarNumeroPublicaciones();
 }

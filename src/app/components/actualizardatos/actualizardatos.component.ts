@@ -76,8 +76,19 @@ onImagenSeleccionada(event: any) {
       this.http.put('http://18.191.67.127:3000/api/usuarios/actualizar', formData, { headers })
         .subscribe({
           next: (res: any) => {
-            this.mensaje = 'Datos actualizados correctamente';
-          },
+  this.mensaje = 'Datos actualizados correctamente';
+  // Si el backend responde con la nueva URL de la imagen:
+  if (res.imagen) {
+    this.foto = res.imagen;
+    // Actualiza también en localStorage
+    const usuarioGuardado = localStorage.getItem('usuario');
+    if (usuarioGuardado) {
+      const usuario = JSON.parse(usuarioGuardado);
+      usuario.foto = res.imagen;
+      localStorage.setItem('usuario', JSON.stringify(usuario));
+    }
+  }
+},
           error: (err) => {
             this.mensaje = err.error?.mensaje || 'Error al actualizar los datos';
           }
