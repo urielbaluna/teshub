@@ -1,0 +1,441 @@
+body, html {
+  background: #ededed;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  background: #ededed;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 16px 32px;
+  border-bottom: 2px solid #d3d3d3;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.logo-bold {
+  color: #222;
+}
+
+.logo-green {
+  color: #2ebd59;
+}
+
+.search-bar {
+  width: 350px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.search-bar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+}
+
+.profile-modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px #0003;
+  padding: 18px 12px 12px 12px;
+  min-width: 210px;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  pointer-events: auto;
+}
+
+.profile-modal-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2196f3;
+  margin-bottom: 12px;
+}
+
+.profile-modal-info-centered {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.profile-field {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.profile-field b,
+.profile-label {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 2px;
+  margin-left: 2px;
+}
+
+.profile-value,
+.profile-value-full {
+  margin-top: 2px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #ededed;
+  border-radius: 6px;
+  padding: 6px 12px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.profile-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  background: #2ebd59;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.profile-btn.delete {
+  background: #ccc;
+  color: #888;
+  margin-top: 8px;
+}
+
+.icon, .profile-pic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.icon-profile {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+  gap: 32px;
+}
+
+.feed {
+  flex: 2;
+  max-width: 800px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.title-green {
+  color: #2ebd59;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.authors {
+  color: #444;
+  font-size: 1rem;
+}
+
+.card-desc {
+  margin: 16px 0;
+  font-size: 1rem;
+}
+
+.card-images {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.pdf-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.screenshot-img {
+  width: 220px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.comments {
+  margin-bottom: 12px;
+}
+
+.comment {
+  background: #f3f3f3;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  display: flex;
+  gap: 8px;
+}
+
+.comment-author {
+  color: #2ebd59;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.add-comment {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.add-comment input {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.btn-green {
+  background: #2ebd59;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-green:hover {
+  background: #249a47;
+}
+
+.profile-summary {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px #0001;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.profile-name {
+  color: #2ebd59;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.profile-detail {
+  color: #444;
+  font-size: 1rem;
+}
+
+.profile-role {
+  color: #222;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.btn-grey {
+  background: #e0e0e0;
+  color: #444;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-weight: bold;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.btn-grey:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sidebar {
+  flex: 1;
+  max-width: 300px;
+}
+
+.sidebar-profile {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.sidebar-info {
+  width: 100%;
+  font-size: 1rem;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.sidebar-role {
+  color: #2ebd59;
+  font-weight: bold;
+}
+
+/* NUEVOS ESTILOS PARA PUBLICACIONES */
+.publicacion-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  margin: 24px 0;
+  padding: 24px;
+}
+
+.publicacion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.publicacion-titulo {
+  font-size: 1.5em;
+  color: #2ca646;
+  font-weight: bold;
+}
+
+.publicacion-autores {
+  font-size: 1em;
+  color: #333;
+}
+
+.publicacion-descripcion {
+  margin: 12px 0;
+  font-size: 1.1em;
+}
+
+.publicacion-archivos {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.miniatura-img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.miniatura-pdf, .miniatura-otro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* Modal content */
+.modal-content {
+  background: #fff;
+  padding: 24px 24px 32px 24px;
+  border-radius: 18px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 4px 24px #0003;
+  position: relative;
+  min-width: 350px;
+}
+
+/* Close button */
+.btn-cerrar-modal {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}

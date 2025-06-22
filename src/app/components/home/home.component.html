@@ -1,0 +1,179 @@
+<div class="header" style="display:flex;align-items:center;justify-content:space-between;padding:10px 32px;width:100%;border-radius:0;box-shadow:0 2px 8px rgba(0,0,0,0.04);background:#fff;">
+  <img src="assets/tes_hub.png" alt="teshub logo" style="height:44px;">
+  <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
+  <div style="flex:1;display:flex;justify-content:center;">
+    <div style="background:#ddd;border-radius:20px;width:350px;display:flex;align-items:center;padding:0 12px;">
+      <i class="fi fi-rr-search" style="color:#888;font-size:18px;"></i>
+      <input type="text" class="search-bar" placeholder="Buscar..." style="width:100%;padding:8px 10px;border:none;background:transparent;outline:none;font-size:1em;">
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;margin-right:40px;">
+    <i class="fi fi-rr-add-document icon-profile"
+      style="cursor:pointer;font-size:28px;color:#222;"
+      (click)="irACrearPublicacion()"></i>
+    <img [src]="usuario.foto"
+        alt="Profile"
+        class="profile-pic"
+        style="width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;"
+        (click)="abrirModalPerfil()">
+  </div>
+</div>
+
+<div style="max-width:900px;margin:4px auto 0 auto;">
+  <div style="background:#fff;border-radius:16px;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px #0001;">
+    <div>
+      <div style="color:#2ebd59;font-size:1.3em;font-weight:bold;">
+        {{ usuario.nombre }} {{ usuario.apellidos }}
+      </div>
+      <div style="font-size:0.98em;color:#222;margin-top:2px;">
+        Participante en: <b>{{ usuario.publicaciones }}</b>
+      </div>
+      <div style="font-size:0.98em;color:#222;">
+        Publicación más destacada: <b>{{ usuario.destacada }}</b>
+        <button style="margin-left:8px;background:#e0e0e0;border:none;border-radius:8px;padding:2px 14px;font-weight:bold;cursor:pointer;">Ver</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <span style="color:#222;font-weight:bold;">{{ usuario.rol }}</span>
+      <button style="background:#2ebd59;color:#fff;border:none;border-radius:8px;padding:6px 18px;font-weight:bold;cursor:pointer;">
+        Mostrar Perfil
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LISTADO DE PUBLICACIONES -->
+<div style="max-width:900px;margin:24px auto 0 auto;">
+  <div *ngFor="let pub of publicaciones; let i = index" class="publicacion-card">
+    
+    <!-- CABECERA DE LA PUBLICACIÓN -->
+    <div class="publicacion-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <!-- Título y colaboradores -->
+      <div style="display: flex; flex-direction: column; align-items: flex-start;">
+        <span class="publicacion-titulo" style="font-weight: bold; font-size: 1.2em;">
+          {{ pub.titulo }}
+        </span>
+        <!-- Colaboradores -->
+        <span
+          class="publicacion-autores"
+          (mouseenter)="mostrarTooltip = i"
+          (mouseleave)="mostrarTooltip = null"
+          style="position:relative;cursor:pointer;margin-top:2px;font-size:0.95em;color:#444;"
+        >
+          {{ getPrimerColaborador(pub.colaboradores) }}
+          <span *ngIf="getColaboradoresRestantes(pub.colaboradores).length > 0">...</span>
+          <!-- Tooltip personalizado -->
+          <div
+            *ngIf="mostrarTooltip === i && getColaboradoresRestantes(pub.colaboradores).length > 0"
+            style="position:absolute;top:120%;left:0;background:#fff;border:1px solid #ccc;padding:8px 14px;border-radius:8px;box-shadow:0 2px 8px #0002;z-index:10;min-width:120px;"
+          >
+            <div *ngFor="let col of getColaboradoresRestantes(pub.colaboradores)">
+              {{ col }}
+            </div>
+          </div>
+        </span>
+      </div>
+      <!-- Botón eliminar -->
+      <button
+        (click)="eliminarPublicacion(i)"
+        class="btn-eliminar-publicacion"
+        style="background:#ff4d4d;color:#fff;border:none;border-radius:8px;padding:4px 14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <i class="fi fi-rr-delete-document" style="font-size:22px;"></i>
+      </button>
+    </div>
+
+    <!-- Descripción -->
+    <div class="publicacion-descripcion">
+      {{ pub.descripcion }}
+    </div>
+
+    <!-- Archivos adjuntos -->
+    <div class="publicacion-archivos">
+      <ng-container *ngFor="let archivo of pub.archivos">
+        <!-- Si es imagen -->
+        <img
+          *ngIf="archivo.type.startsWith('image/')"
+          [src]="archivo.dataUrl"
+          class="miniatura-img"
+          alt="Imagen"
+          style="cursor:pointer;"
+          (click)="abrirImagenModal(archivo)"
+        >
+        <!-- Si no es imagen -->
+        <div
+          *ngIf="!archivo.type.startsWith('image/')"
+          class="miniatura-otro"
+          style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;"
+          (click)="descargarArchivo(archivo)"
+          title="Descargar archivo"
+        >
+          <img src="assets/documento.jpg" alt="Documento" style="width:80px; border-radius:12px;">
+          <span style="font-size:13px; color:#444; margin-top:2px;">{{ archivo.name }}</span>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- APARTADO DE COMENTARIOS (debe ir dentro del *ngFor de publicaciones) -->
+    <div class="comentarios-section" style="margin-top:18px;">
+      <div style="font-weight:bold;margin-bottom:6px;">Comentarios</div>
+      <div *ngIf="pub.comentarios?.length > 0; else sinComentarios">
+        <div *ngFor="let comentario of pub.comentarios; let j = index" style="margin-bottom:8px;padding:8px 12px;background:#f6f6f6;border-radius:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-weight:bold;">{{ comentario.autor }}:</span>
+          <span style="flex:1;">{{ comentario.texto }}</span>
+          <button *ngIf="comentario.autor === usuario.nombre" (click)="eliminarComentario(i, j)" style="background:#ff4d4d;color:#fff;border:none;border-radius:6px;padding:2px 10px;cursor:pointer;">Eliminar</button>
+        </div>
+      </div>
+      <ng-template #sinComentarios>
+        <div style="color:#888;font-size:0.95em;">Sin comentarios aún.</div>
+      </ng-template>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        <input [(ngModel)]="nuevoComentario[i]" placeholder="Escribe un comentario..." style="flex:1;padding:6px 10px;border-radius:8px;border:1px solid #ccc;">
+        <button (click)="publicarComentario(i)" style="background:#2ca646;color:#fff;border:none;border-radius:8px;padding:6px 16px;font-weight:bold;cursor:pointer;">Publicar</button>
+      </div>
+    </div>
+    <!-- FIN APARTADO DE COMENTARIOS -->
+
+  </div>
+</div>
+
+<!-- Modal para visualizar imagen grande -->
+<div *ngIf="imagenModalVisible" class="modal-backdrop" (click)="cerrarImagenModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()" style="position:relative; min-width:350px;">
+    <button (click)="cerrarImagenModal()" class="btn-cerrar-modal" style="position:absolute;top:18px;right:18px;background:transparent;border:none;cursor:pointer;">
+      <i class="fi fi-rr-notdef" style="font-size:32px;color:#888;"></i>
+    </button>
+    <h3 style="margin-top:32px; font-weight:bold;">{{ imagenModalNombre }}</h3>
+    <img [src]="imagenModalUrl" style="display:block;max-width:70vw;max-height:60vh;margin:32px auto 0 auto;">
+  </div>
+</div>
+
+<!-- Modal de perfil de usuario -->
+<div *ngIf="mostrarModalPerfil" class="profile-modal-backdrop" (click)="cerrarModalPerfil()">
+  <div class="profile-modal" (click)="$event.stopPropagation()">
+    <img [src]="usuario.foto" alt="Profile" class="profile-modal-img">
+    <div class="profile-modal-info-centered">
+      <div class="profile-field">
+        <span class="profile-label"><b>Matricula:</b></span>
+        <span class="profile-value">{{ usuario.matricula }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-label"><b>Correo electrónico:</b></span>
+        <span class="profile-value">{{ usuario.correo }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-label"><b>Nombre:</b></span>
+        <span class="profile-value">{{ usuario.nombre }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-label"><b>Apellidos:</b></span>
+        <span class="profile-value">{{ usuario.apellidos }}</span>
+      </div>
+      <div class="profile-field">
+        <span class="profile-label"><b>Rol:</b></span>
+        <span class="profile-value">{{ usuario.rol }}</span>
+      </div>
+    </div>
+    <button class="profile-btn">MODIFICAR DATOS</button>
+    <button class="profile-btn delete" disabled>ELIMINAR CUENTA</button>
+  </div>
+</div>

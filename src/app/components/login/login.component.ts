@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ export class LoginComponent {
   correo: string = '';
   contrasena: string = '';
   mensaje: string = '';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   onSubmit() {
     const datos = {
@@ -23,6 +24,7 @@ export class LoginComponent {
         next: (respuesta: any) => {
           this.mensaje = 'Login exitoso';
           // Aquí puedes guardar el token o redirigir
+          this.router.navigate(['/home']); //redige a la pagina de inicio
           console.log(respuesta);
         },
         error: (error) => {

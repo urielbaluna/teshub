@@ -10,7 +10,8 @@ import { ActualizardatosComponent } from './components/actualizardatos/actualiza
 import { CrearcuentaComponent } from './components/crearcuenta/crearcuenta.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { HomeComponent } from './components/home/home.component';
+import { CrearPublicacionComponent } from './components/crear-publicacion/crear-publicacion.component';
 
 
 
@@ -22,6 +23,8 @@ import { HttpClientModule } from '@angular/common/http';
     ActualizarcontrasenaComponent,
     ActualizardatosComponent,
     CrearcuentaComponent,
+    HomeComponent,
+    CrearPublicacionComponent,
     
     
    
