@@ -91,26 +91,28 @@ export class CrearPublicacionComponent {
 
   // Cambia este método para guardar archivos como base64/dataUrl
 async publicar() {
-  // Si no se ingresaron colaboradores, asigna el nombre del usuario automáticamente
   if (!this.colaboradores || this.colaboradores.trim() === '') {
     const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
     this.colaboradores = `${usuario.nombre} ${usuario.apellidos}`;
   }
 
-  const archivosConvertidos = await Promise.all(
-    this.archivosSeleccionados.map(archivo => this.archivoADataUrl(archivo))
-  );
+  const formData = new FormData();
+  formData.append('titulo', this.titulo);
+  formData.append('colaboradores', this.colaboradores);
+  formData.append('descripcion', this.descripcion);
 
-  const nuevaPublicacion = {
-    titulo: this.titulo,
-    colaboradores: this.colaboradores,
-    descripcion: this.descripcion,
-    archivos: archivosConvertidos,
-    comentarios: []
-  };
+  this.archivosSeleccionados.forEach((archivo, i) => {
+    formData.append('archivos', archivo, archivo.name);
+  });
 
-  this.publicacionesService.agregarPublicacion(nuevaPublicacion);
-  this.modalExito = true;
+  this.publicacionesService.agregarPublicacion(formData).subscribe({
+    next: () => {
+      this.modalExito = true;
+    },
+    error: (err) => {
+      console.error('Error al crear publicación:', err);
+    }
+  });
 }
 
   cerrarModalExito() {

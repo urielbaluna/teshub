@@ -51,7 +51,7 @@
       <!-- Título y colaboradores -->
       <div style="display: flex; flex-direction: column; align-items: flex-start;">
         <span class="publicacion-titulo" style="font-weight: bold; font-size: 1.2em;">
-          {{ pub.titulo }}
+          {{ pub.nombre }}
         </span>
         <!-- Colaboradores -->
         <span
@@ -60,14 +60,14 @@
           (mouseleave)="mostrarTooltip = null"
           style="position:relative;cursor:pointer;margin-top:2px;font-size:0.95em;color:#444;"
         >
-          {{ getPrimerColaborador(pub.colaboradores) }}
-          <span *ngIf="getColaboradoresRestantes(pub.colaboradores).length > 0">...</span>
+          {{ getPrimerColaborador(pub.integrantes) }}
+          <span *ngIf="getColaboradoresRestantes(pub.integrantes).length > 0">...</span>
           <!-- Tooltip personalizado -->
           <div
-            *ngIf="mostrarTooltip === i && getColaboradoresRestantes(pub.colaboradores).length > 0"
+            *ngIf="mostrarTooltip === i && getColaboradoresRestantes(pub.integrantes).length > 0"
             style="position:absolute;top:120%;left:0;background:#fff;border:1px solid #ccc;padding:8px 14px;border-radius:8px;box-shadow:0 2px 8px #0002;z-index:10;min-width:120px;"
           >
-            <div *ngFor="let col of getColaboradoresRestantes(pub.colaboradores)">
+            <div *ngFor="let col of getColaboradoresRestantes(pub.integrantes)">
               {{ col }}
             </div>
           </div>
@@ -90,25 +90,25 @@
     <!-- Archivos adjuntos -->
     <div class="publicacion-archivos">
       <ng-container *ngFor="let archivo of pub.archivos">
-        <!-- Si es imagen -->
+        <!-- Si es imagen (por extensión) -->
         <img
-          *ngIf="archivo.type.startsWith('image/')"
-          [src]="archivo.dataUrl"
+          *ngIf="esImagen(archivo)"
+          [src]="getUrlArchivo(archivo)"
           class="miniatura-img"
           alt="Imagen"
           style="cursor:pointer;"
-          (click)="abrirImagenModal(archivo)"
+          (click)="abrirImagenModal({ name: getNombreArchivo(archivo), dataUrl: getUrlArchivo(archivo) })"
         >
         <!-- Si no es imagen -->
         <div
-          *ngIf="!archivo.type.startsWith('image/')"
+          *ngIf="!esImagen(archivo)"
           class="miniatura-otro"
           style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;"
-          (click)="descargarArchivo(archivo)"
+          (click)="descargarArchivo({ name: getNombreArchivo(archivo), dataUrl: getUrlArchivo(archivo) })"
           title="Descargar archivo"
         >
           <img src="assets/documento.jpg" alt="Documento" style="width:80px; border-radius:12px;">
-          <span style="font-size:13px; color:#444; margin-top:2px;">{{ archivo.name }}</span>
+          <span style="font-size:13px; color:#444; margin-top:2px;">{{ getNombreArchivo(archivo) }}</span>
         </div>
       </ng-container>
     </div>
@@ -117,10 +117,14 @@
     <div class="comentarios-section" style="margin-top:18px;">
       <div style="font-weight:bold;margin-bottom:6px;">Comentarios</div>
       <div *ngIf="pub.comentarios?.length > 0; else sinComentarios">
-        <div *ngFor="let comentario of pub.comentarios; let j = index" style="margin-bottom:8px;padding:8px 12px;background:#f6f6f6;border-radius:8px;display:flex;align-items:center;gap:8px;">
-          <span style="font-weight:bold;">{{ comentario.autor }}:</span>
-          <span style="flex:1;">{{ comentario.texto }}</span>
-          <button *ngIf="comentario.autor === usuario.nombre" (click)="eliminarComentario(i, j)" style="background:#ff4d4d;color:#fff;border:none;border-radius:6px;padding:2px 10px;cursor:pointer;">Eliminar</button>
+        <div *ngFor="let comentario of pub.comentarios.slice(comentarioInicio[i], comentarioInicio[i] + 3); let j = index" style="margin-bottom:8px;padding:8px 12px;background:#f6f6f6;border-radius:8px;display:flex;align-items:center;gap:8px;">
+          <span style="font-weight:bold;">{{ comentario.nombre }}:</span>
+          <span style="flex:1;">{{ comentario.comentario }}</span>
+          <button *ngIf="comentario.nombre === usuario.nombre" (click)="eliminarComentario(i, comentarioInicio[i] + j)" style="background:#ff4d4d;color:#fff;border:none;border-radius:6px;padding:2px 10px;cursor:pointer;">Eliminar</button>
+        </div>
+        <div style="display:flex;justify-content:center;gap:8px;">
+          <button (click)="verMenosComentarios(i)" [disabled]="comentarioInicio[i] === 0" style="padding:2px 10px;border-radius:6px;border:1px solid #ccc;cursor:pointer;">&#8592;</button>
+          <button (click)="verMasComentarios(i, pub.comentarios.length)" [disabled]="comentarioInicio[i] + 3 >= pub.comentarios.length" style="padding:2px 10px;border-radius:6px;border:1px solid #ccc;cursor:pointer;">&#8594;</button>
         </div>
       </div>
       <ng-template #sinComentarios>
@@ -175,5 +179,6 @@
     </div>
     <button routerLink="/actualizardatos" class="profile-btn">MODIFICAR DATOS</button>
     <button class="profile-btn delete" disabled>ELIMINAR CUENTA</button>
+    <button class="profile-btn logout" (click)="cerrarSesion()">CERRAR SESIÓN</button>
   </div>
 </div>

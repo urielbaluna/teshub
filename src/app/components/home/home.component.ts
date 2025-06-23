@@ -37,6 +37,8 @@ export class HomeComponent implements OnInit {
   // Para comentarios
   nuevoComentario: string[] = [];
 
+  comentarioInicio: number[] = [];
+
   constructor(
     private router: Router,
     private publicacionesService: PublicacionesService,
@@ -44,13 +46,16 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-  this.publicaciones = this.publicacionesService.obtenerPublicaciones();
-  const usuarioGuardado = localStorage.getItem('usuario');
-  if (usuarioGuardado && usuarioGuardado !== 'undefined') {
-    this.usuario = JSON.parse(usuarioGuardado);
+    this.publicacionesService.obtenerPublicacionesApi().subscribe((data: any[]) => {
+      this.publicaciones = data;
+      this.comentarioInicio = this.publicaciones.map(() => 0); // Inicializa el índice para cada publicación
+      this.actualizarNumeroPublicaciones();
+    });
+    const usuarioGuardado = localStorage.getItem('usuario');
+    if (usuarioGuardado && usuarioGuardado !== 'undefined') {
+      this.usuario = JSON.parse(usuarioGuardado);
+    }
   }
-  this.actualizarNumeroPublicaciones();
-}
 
   irACrearPublicacion() {
     this.router.navigate(['/crear-publicacion']);
@@ -65,10 +70,12 @@ export class HomeComponent implements OnInit {
   }
 
   eliminarPublicacion(index: number) {
-    this.publicacionesService.eliminarPublicacion(index);
-    // Clona el array para forzar el refresco de Angular
-    this.publicaciones = [...this.publicacionesService.obtenerPublicaciones()];
-    this.actualizarNumeroPublicaciones();
+    // Aquí deberías llamar a un método de tu servicio que elimine por ID en la API si lo tienes
+    // Por ahora solo recarga las publicaciones
+    this.publicacionesService.obtenerPublicacionesApi().subscribe((data: any[]) => {
+      this.publicaciones = data;
+      this.actualizarNumeroPublicaciones();
+    });
   }
 
   descargarArchivo(archivo: any) {
@@ -96,18 +103,15 @@ export class HomeComponent implements OnInit {
   }
 
   // Colaboradores: solo principal, tooltip con los demás
-  getPrimerColaborador(colaboradores: string): string {
-    if (!colaboradores) return '';
-    return colaboradores.split(',')[0].trim();
+  getPrimerColaborador(colaboradores: string[]): string {
+    return colaboradores && colaboradores.length > 0 ? colaboradores[0] : '';
   }
 
-  getColaboradoresRestantes(colaboradores: string): string[] {
-    if (!colaboradores) return [];
-    const arr = colaboradores.split(',').map(c => c.trim());
-    return arr.length > 1 ? arr.slice(1) : [];
+  getColaboradoresRestantes(colaboradores: string[]): string[] {
+    return colaboradores && colaboradores.length > 1 ? colaboradores.slice(1) : [];
   }
 
-  getColaboradoresTooltip(colaboradores: string): string {
+  getColaboradoresTooltip(colaboradores: string[]): string {
     const restantes = this.getColaboradoresRestantes(colaboradores);
     return restantes.length ? restantes.join('\n') : '';
   }
@@ -121,20 +125,68 @@ export class HomeComponent implements OnInit {
   publicarComentario(index: number) {
     const texto = (this.nuevoComentario[index] || '').trim();
     if (!texto) return;
-    const comentario = {
-      autor: this.usuario.nombre,
-      texto
-    };
-    this.publicaciones[index].comentarios = this.publicaciones[index].comentarios || [];
-    this.publicaciones[index].comentarios.push(comentario);
-    this.nuevoComentario[index] = '';
-    // Guarda en localStorage (usa método público, ver nota abajo)
-    this.publicacionesService.actualizarLocalStorage();
+
+    const publicacion = this.publicaciones[index];
+    const id_publi = publicacion.id_publi;
+    const matricula = this.usuario.matricula;
+
+    this.publicacionesService.comentarPublicacion(id_publi, texto, matricula).subscribe({
+      next: (resp) => {
+        // Opcional: recargar comentarios o agregar el nuevo comentario localmente
+        if (!publicacion.comentarios) publicacion.comentarios = [];
+        publicacion.comentarios.push({
+          nombre: this.usuario.nombre,
+          comentario: texto,
+          matricula: matricula
+        });
+        this.nuevoComentario[index] = '';
+      },
+      error: (err) => {
+        // Manejo de error
+        console.error('Error al comentar:', err);
+      }
+    });
+  }
+
+  verMasComentarios(i: number, total: number) {
+    if (this.comentarioInicio[i] + 3 < total) {
+      this.comentarioInicio[i]++;
+    }
+  }
+
+  verMenosComentarios(i: number) {
+    if (this.comentarioInicio[i] > 0) {
+      this.comentarioInicio[i]--;
+    }
   }
 
   eliminarComentario(pubIndex: number, comIndex: number) {
-    this.publicaciones[pubIndex].comentarios.splice(comIndex, 1);
-    this.publicacionesService.actualizarLocalStorage();
+    const publicacion = this.publicaciones[pubIndex];
+    const comentarioObj = publicacion.comentarios[comIndex];
+    const id_publi = publicacion.id_publi;
+    const comentario = comentarioObj.comentario;
+    const matricula = comentarioObj.matricula?.toString() || this.usuario.matricula;
+
+    this.publicacionesService.eliminarComentarioPublicacion(id_publi, comentario, matricula).subscribe({
+      next: () => {
+        publicacion.comentarios.splice(comIndex, 1);
+      },
+      error: (err) => {
+        console.error('Error al eliminar comentario:', err);
+      }
+    });
+  }
+
+  esImagen(archivo: string): boolean {
+    return /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(archivo);
+  }
+
+  getUrlArchivo(archivo: string): string {
+    return `http://18.191.67.127:3000/${archivo}`;
+  }
+
+  getNombreArchivo(archivo: string): string {
+    return archivo.split('/').pop() || archivo;
   }
 
   // Actualiza el número de publicaciones en las que participa el usuario
@@ -147,4 +199,10 @@ export class HomeComponent implements OnInit {
       pub.colaboradores?.toLowerCase().includes(this.usuario.nombre.toLowerCase())
     ).length;
   }
+
+  cerrarSesion() {
+  localStorage.removeItem('usuario');
+  localStorage.removeItem('token');
+  this.router.navigate(['/login']);
+}
 }

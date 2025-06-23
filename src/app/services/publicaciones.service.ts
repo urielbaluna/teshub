@@ -1,37 +1,60 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { environment } from '../../enviroments//enviroment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PublicacionesService {
-  private publicaciones: any[] = [];
+  private apiUrlListar = `${environment.apiBaseUrl}/api/publicaciones/listar`;
+  private apiUrlCrear = `${environment.apiBaseUrl}/api/publicaciones/crear`;
 
-  constructor() {
-    // Cargar publicaciones desde localStorage al iniciar
-    const guardadas = localStorage.getItem('publicaciones');
-    this.publicaciones = guardadas ? JSON.parse(guardadas) : [];
+  constructor(private http: HttpClient) {}
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
   }
 
-  private guardarEnLocalStorage() {
-    localStorage.setItem('publicaciones', JSON.stringify(this.publicaciones));
+  obtenerPublicacionesApi(): Observable<any[]> {
+    return this.http.get<{ publicaciones: any[] }>(
+      this.apiUrlListar,
+      { headers: this.getAuthHeaders() }
+    ).pipe(
+      map(res => res.publicaciones)
+    );
   }
 
-  // Método público para actualizar el localStorage desde fuera del servicio
-  public actualizarLocalStorage() {
-    this.guardarEnLocalStorage();
+  agregarPublicacion(publicacion: any): Observable<any> {
+    return this.http.post(
+      `${environment.apiBaseUrl}/api/publicaciones/crear`,
+      publicacion,
+      { headers: this.getAuthHeaders() }
+    );
   }
 
-  agregarPublicacion(publicacion: any) {
-    this.publicaciones.unshift(publicacion);
-    this.guardarEnLocalStorage();
+  eliminarComentarioPublicacion(id_publi: number, comentario: string, matricula: string) {
+    const body = { id_publi, comentario, matricula };
+    return this.http.post(
+      `${environment.apiBaseUrl}/api/publicaciones/eliminar-comentario`,
+      body,
+      { headers: this.getAuthHeaders() }
+    );
   }
-
-  obtenerPublicaciones(): any[] {
-    return this.publicaciones;
-  }
-
-  eliminarPublicacion(index: number) {
-    this.publicaciones.splice(index, 1);
-    this.guardarEnLocalStorage();
+  comentarPublicacion(id_publi: number, comentario: string, matricula: string): Observable<any> {
+    const body = {
+      id_publi,
+      comentario,
+      matricula
+    };
+    return this.http.post(
+      `${environment.apiBaseUrl}/api/publicaciones/comentar`,
+      body,
+      { headers: this.getAuthHeaders() }
+    );
   }
 }
+

@@ -38,6 +38,7 @@ export class LoginComponent {
       };
 
       localStorage.setItem('usuario', JSON.stringify(usuario));
+      localStorage.setItem('token', respuesta.token);
       this.router.navigate(['/home']); 
       console.log(respuesta);
     },
