@@ -201,8 +201,11 @@ export class HomeComponent implements OnInit {
   }
 
   cerrarSesion() {
-  localStorage.removeItem('usuario');
-  localStorage.removeItem('token');
-  this.router.navigate(['/login']);
-}
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+  irAlPerfil(): void {
+    this.router.navigate(['/perfil']);
+  }
 }
