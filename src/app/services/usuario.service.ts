@@ -19,6 +19,7 @@ export class UsuariosService {
       { headers: this.getAuthHeaders() }
     );
   }
+
   eliminarCuenta(matricula: string) {
     const body = { matricula };
     return this.http.post(

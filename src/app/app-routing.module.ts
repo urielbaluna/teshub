@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'correorecuperacion', component: CorreorecuperacionComponent },
   { path: 'home', component: HomeComponent },
   { path: 'crear-publicacion', component: CrearPublicacionComponent },
-  { path: 'perfil', component: PerfilComponent },
+  { path: 'perfil/:matricula', component: PerfilComponent },
   { path: 'editar-publicacion/:id', component: EditarPublicacionComponent },
   
   { path: '', redirectTo: '/login', pathMatch: 'full' }

@@ -21,9 +21,7 @@
       <i class="fi fi-rr-add-document icon-profile"
         style="cursor:pointer;font-size:28px;color:#222;"
         (click)="irACrearPublicacion()"></i>
-      <img [src]="usuario.foto"
-          alt="Profile"
-          class="profile-pic"
+      <img [src]="usuario.imagen" alt="Profile" class="profile-pic"
           style="width:38px;height:38px;border-radius:50%;object-fit:cover;cursor:pointer;"
           (click)="abrirModalPerfil()">
     </div>
@@ -34,22 +32,20 @@
   <div style="background:#fff;border-radius:16px;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px #0001;">
     <div>
       <div style="color:#2ebd59;font-size:1.3em;font-weight:bold;">
-        {{ usuario.nombre }} {{ usuario.apellidos }}
+        {{ usuario.nombre }} {{ usuario.apellido }}
       </div>
       <div style="font-size:0.98em;color:#222;margin-top:2px;">
-        Participante en: <b>{{ usuario.publicaciones }}</b>
+        Participante en: <b>{{ usuario.total_publicaciones }}</b>
       </div>
       <div style="font-size:0.98em;color:#222;">
-        Publicación más destacada: <b>{{ usuario.destacada }}</b>
-        <button style="margin-left:8px;background:#e0e0e0;border:none;border-radius:8px;padding:2px 14px;font-weight:bold;cursor:pointer;">Ver</button>
+        Publicación más destacada: <b>{{ usuario.publicacion_destacada }}</b>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
       <span style="color:#222;font-weight:bold;">{{ usuario.rol }}</span>
-      <button (click)="irAlPerfil()" style="background:#2ebd59;color:#fff;border:none;border-radius:8px;padding:6px 18px;font-weight:bold;cursor:pointer;">
+      <button (click)="irAlPerfil(usuario.matricula)" style="background:#2ebd59;color:#fff;border:none;border-radius:8px;padding:6px 18px;font-weight:bold;cursor:pointer;">
         Mostrar Perfil
       </button>
-
     </div>
   </div>
 </div>
@@ -68,6 +64,9 @@
         <div *ngIf="perfil.mejor_publicacion && perfil.mejor_publicacion.nombre">
           Mejor publicación: <b>{{ perfil.mejor_publicacion.nombre }}</b>
         </div>
+        <button (click)="irAlPerfil(perfil.matricula)" style="background:#2ebd59;color:#fff;border:none;border-radius:8px;padding:6px 18px;font-weight:bold;cursor:pointer;">
+          Mostrar Perfil
+        </button>
       </div>
     </div>
   </div>

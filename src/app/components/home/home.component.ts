@@ -13,13 +13,13 @@ export class HomeComponent implements OnInit {
   publicaciones: any[] = [];
   usuario: any = { 
     nombre: '',
-    apellidos: '',
-    matricula: '',
+    apellido: '',
     correo: '',
-    publicaciones: 0,
-    destacada: '',
+    matricula: '',
     rol: '',
-    foto: ''
+    imagen: '',
+    total_publicaciones: 0,
+    publicacion_destacada: ''
   };
   mostrarMenuPerfil: boolean = false;
   mostrarModalPerfil: boolean = false;
@@ -50,33 +50,39 @@ export class HomeComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-  ngOnInit() {
-    this.publicacionesService.obtenerPublicacionesApi().subscribe((data: any[]) => {
-      this.publicaciones = data;
-      this.comentarioInicio = this.publicaciones.map(() => 0); // Inicializa el índice para cada publicación
-      this.actualizarNumeroPublicaciones();
-    });
-    const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado && usuarioGuardado !== 'undefined') {
-      this.usuario = JSON.parse(usuarioGuardado);
-    }
-    // Si hay token, pide la info real (incluida la foto)
-    if (this.usuario.token) {
-      const headers = new HttpHeaders({
-        Authorization: `Bearer ${this.usuario.token}`
-      });
-      this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
-        .subscribe((info: any) => {
-          // Actualiza la foto si viene en la respuesta
-          if (info.imagen && info.imagen.trim() !== '') {
-            this.usuario.foto = `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`;
-            // Actualiza en localStorage para otros componentes
-            localStorage.setItem('usuario', JSON.stringify(this.usuario));
-          }
-        });
-    }
+ngOnInit() {
+  // Cargar publicaciones
+  this.publicacionesService.obtenerPublicacionesApi().subscribe((data: any[]) => {
+    this.publicaciones = data;
+    this.comentarioInicio = this.publicaciones.map(() => 0);
     this.actualizarNumeroPublicaciones();
+  });
+
+  // Obtener token desde localStorage
+  const token = localStorage.getItem('token');
+  if (token) {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+    this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+      .subscribe((info: any) => {
+        this.usuario = {
+          nombre: info.nombre,
+          apellido: info.apellido,
+          correo: info.correo,
+          matricula: info.matricula,
+          rol: info.rol,
+          imagen: info.imagen
+            ? `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`
+            : 'assets/default-user.png',
+          total_publicaciones: info.total_publicaciones,
+          publicacion_destacada: info.publicacion_destacada
+        };
+        // Actualiza en localStorage si lo necesitas en otros componentes
+        localStorage.setItem('usuario', JSON.stringify(this.usuario));
+      });
   }
+}
 
   irACrearPublicacion() {
     this.router.navigate(['/crear-publicacion']);
@@ -256,9 +262,9 @@ export class HomeComponent implements OnInit {
       localStorage.removeItem('token');
       this.router.navigate(['/login']);
     }
-      irAlPerfil(): void {
-      this.router.navigate(['/perfil']);
-    }
+  irAlPerfil(matricula: string) {
+    this.router.navigate(['/perfil', matricula]);
+  }
 
     eliminarCuenta() {
     const matricula = this.usuarioInfoModal.matricula || this.usuario.matricula;

@@ -1,10 +1,13 @@
 <div class="perfil-container">
 
   <div class="perfil-header" style="position: relative;">
-    <img [src]="usuario.foto || 'assets/default-user.png'" alt="Foto de perfil" class="foto-perfil">
+    <img [src]="usuario.imagen || 'assets/default-user.png'" alt="Foto de perfil" class="foto-perfil">
     <div class="datos-usuario">
-      <h2 class="nombre">{{ usuario.nombre }} {{ usuario.apellidos }}</h2>
+      <h2 class="nombre">{{ usuario.nombre }} {{ usuario.apellido }}</h2>
       <p class="rol">{{ usuario.rol }}</p>
+      <p style="margin: 8px 0 0 0; font-weight: bold;">
+        Publicaciones en las que participa: {{ usuario.total_publicaciones }}
+      </p>
     </div>
 
     <!-- Botón dentro del recuadro de datos del usuario -->
@@ -17,17 +20,10 @@
   <div class="proyectos-section">
     <h3>Mis proyectos:</h3>
 
-    <div *ngFor="let proyecto of usuario.proyectos" class="proyecto-card">
-      <div class="nombre-proyecto">{{ proyecto.nombre }}</div>
+    <div *ngFor="let proyecto of usuario.publicaciones" class="proyecto-card">
+      <div class="nombre-proyecto">{{ proyecto.proyecto_nombre }}</div>
       <div class="proyecto-info">
-        <i class="icon icon-file"></i>
-        <i class="icon icon-delete"></i>
-        <span class="fecha">Hace {{ proyecto.tiempo }}</span>
-        <span class="estrellas">
-          <ng-container *ngFor="let star of [].constructor(proyecto.estrellas)">
-            ⭐
-          </ng-container>
-        </span>
+        <span class="fecha">{{ proyecto.hace_cuanto }}</span>
       </div>
     </div>
   </div>
