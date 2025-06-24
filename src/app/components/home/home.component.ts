@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PublicacionesService } from '../../services/publicaciones.service';
-import { UsuarioService } from '../../services/usuario.service';
+import { UsuariosService } from '../../services/usuario.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,9 @@ export class HomeComponent implements OnInit {
   mostrarMenuPerfil: boolean = false;
   mostrarModalPerfil: boolean = false;
 
+  // Para mostrar la info actualizada en el modal
+  usuarioInfoModal: any = {};
+
   // Variables para el modal de imagen
   imagenModalVisible: boolean = false;
   imagenModalUrl: string | null = null;
@@ -42,7 +46,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private router: Router,
     private publicacionesService: PublicacionesService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuariosService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -55,6 +60,22 @@ export class HomeComponent implements OnInit {
     if (usuarioGuardado && usuarioGuardado !== 'undefined') {
       this.usuario = JSON.parse(usuarioGuardado);
     }
+    // Si hay token, pide la info real (incluida la foto)
+    if (this.usuario.token) {
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${this.usuario.token}`
+      });
+      this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+        .subscribe((info: any) => {
+          // Actualiza la foto si viene en la respuesta
+          if (info.imagen && info.imagen.trim() !== '') {
+            this.usuario.foto = `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`;
+            // Actualiza en localStorage para otros componentes
+            localStorage.setItem('usuario', JSON.stringify(this.usuario));
+          }
+        });
+    }
+    this.actualizarNumeroPublicaciones();
   }
 
   irACrearPublicacion() {
@@ -62,7 +83,30 @@ export class HomeComponent implements OnInit {
   }
 
   abrirModalPerfil() {
-    this.mostrarModalPerfil = true;
+    // Obtiene la info actualizada del usuario para el modal
+    const token = this.usuario.token;
+    if (token) {
+      const headers = new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      });
+      this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+        .subscribe((info: any) => {
+          this.usuarioInfoModal = {
+            ...info,
+            imagen: info.imagen
+              ? `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`
+              : 'assets/img/brian.png'
+          };
+          this.mostrarModalPerfil = true;
+        }, () => {
+          // Si falla, muestra el modal con los datos locales
+          this.usuarioInfoModal = { ...this.usuario };
+          this.mostrarModalPerfil = true;
+        });
+    } else {
+      this.usuarioInfoModal = { ...this.usuario };
+      this.mostrarModalPerfil = true;
+    }
   }
 
   cerrarModalPerfil() {
@@ -70,11 +114,15 @@ export class HomeComponent implements OnInit {
   }
 
   eliminarPublicacion(index: number) {
-    // Aquí deberías llamar a un método de tu servicio que elimine por ID en la API si lo tienes
-    // Por ahora solo recarga las publicaciones
-    this.publicacionesService.obtenerPublicacionesApi().subscribe((data: any[]) => {
-      this.publicaciones = data;
-      this.actualizarNumeroPublicaciones();
+    const publicacion = this.publicaciones[index];
+    const id_publi = publicacion.id_publi;
+    this.publicacionesService.eliminarPublicacion(id_publi).subscribe({
+      next: () => {
+        this.publicaciones.splice(index, 1); // Elimina de la vista
+      },
+      error: (err) => {
+        console.error('Error al eliminar publicación:', err);
+      }
     });
   }
 
@@ -132,7 +180,6 @@ export class HomeComponent implements OnInit {
 
     this.publicacionesService.comentarPublicacion(id_publi, texto, matricula).subscribe({
       next: (resp) => {
-        // Opcional: recargar comentarios o agregar el nuevo comentario localmente
         if (!publicacion.comentarios) publicacion.comentarios = [];
         publicacion.comentarios.push({
           nombre: this.usuario.nombre,
@@ -142,7 +189,6 @@ export class HomeComponent implements OnInit {
         this.nuevoComentario[index] = '';
       },
       error: (err) => {
-        // Manejo de error
         console.error('Error al comentar:', err);
       }
     });
@@ -189,6 +235,11 @@ export class HomeComponent implements OnInit {
     return archivo.split('/').pop() || archivo;
   }
 
+  esIntegrante(pub: any): boolean {
+    if (!pub.integrantes || !this.usuario?.matricula) return false;
+    return pub.integrantes.some((int: any) => int.matricula == this.usuario.matricula);
+  }
+
   // Actualiza el número de publicaciones en las que participa el usuario
   actualizarNumeroPublicaciones() {
     if (!this.usuario || !this.usuario.nombre) {
@@ -201,8 +252,54 @@ export class HomeComponent implements OnInit {
   }
 
   cerrarSesion() {
-  localStorage.removeItem('usuario');
-  localStorage.removeItem('token');
-  this.router.navigate(['/login']);
-}
+      localStorage.removeItem('usuario');
+      localStorage.removeItem('token');
+      this.router.navigate(['/login']);
+    }
+
+    eliminarCuenta() {
+    const matricula = this.usuarioInfoModal.matricula || this.usuario.matricula;
+    this.usuarioService.eliminarCuenta(matricula).subscribe({
+      next: () => {
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('token');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Error al eliminar cuenta:', err);
+        alert('No se pudo eliminar la cuenta.');
+      }
+    });
+  }
+
+  palabraBusqueda: string = '';
+
+  perfiles: any[] = [];
+
+  buscar() {
+    const palabra = this.palabraBusqueda.trim();
+    if (palabra.length === 0) {
+      this.cargarPublicaciones();
+      this.perfiles = [];
+      return;
+    }
+    this.http.get<any>(`http://18.191.67.127:3000/api/buscar?palabra=${encodeURIComponent(palabra)}`)
+      .subscribe({
+        next: (resp) => {
+          this.publicaciones = resp.publicaciones || [];
+          this.perfiles = resp.perfiles || [];
+        },
+        error: (err) => {
+          console.error('Error en búsqueda:', err);
+          this.publicaciones = [];
+          this.perfiles = [];
+        }
+      });
+  }
+    // Método para cargar todas las publicaciones (llámalo en ngOnInit y cuando el input esté vacío)
+    cargarPublicaciones() {
+      this.publicacionesService.obtenerPublicacionesApi().subscribe((data: any[]) => {
+        this.publicaciones = data;
+      });
+    }
 }

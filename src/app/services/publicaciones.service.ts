@@ -35,6 +35,12 @@ export class PublicacionesService {
       { headers: this.getAuthHeaders() }
     );
   }
+  eliminarPublicacion(id_publi: number) {
+    return this.http.delete(
+      `${environment.apiBaseUrl}/api/publicaciones/eliminar/${id_publi}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 
   eliminarComentarioPublicacion(id_publi: number, comentario: string, matricula: string) {
     const body = { id_publi, comentario, matricula };

@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-actualizardatos',
@@ -15,17 +16,24 @@ export class ActualizardatosComponent implements OnInit {
   mensaje: string = '';
   foto: string = 'assets/img/brian.png';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    const usuarioGuardado = localStorage.getItem('usuario');
-    if (usuarioGuardado && usuarioGuardado !== 'undefined') {
-      const usuario = JSON.parse(usuarioGuardado);
-      this.nombre = usuario.nombre || '';
-      this.apellido = usuario.apellidos || usuario.apellido || '';
-      this.correo = usuario.correo || '';
-      this.foto = usuario.foto || 'assets/img/brian.png'; 
-      
+    const token = localStorage.getItem('token');
+    if (token) {
+      const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+      this.http.get<any>('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+        .subscribe({
+          next: (info) => {
+            this.nombre = info.nombre || '';
+            this.apellido = info.apellido || '';
+            this.correo = info.correo || '';
+            this.foto = info.imagen ? `http://18.191.67.127:3000/${info.imagen}` : 'assets/img/brian.png';
+          },
+          error: () => {
+            this.mensaje = 'No se pudo cargar la información del usuario.';
+          }
+        });
     }
   }
   imagenSeleccionada: File | null = null;
@@ -43,6 +51,8 @@ onImagenSeleccionada(event: any) {
     reader.readAsDataURL(archivo);
   }
 }
+
+modalExito: boolean = false;
 
   actualizarDatos() {
     const body: any = {};
@@ -76,8 +86,19 @@ onImagenSeleccionada(event: any) {
       this.http.put('http://18.191.67.127:3000/api/usuarios/actualizar', formData, { headers })
         .subscribe({
           next: (res: any) => {
-            this.mensaje = 'Datos actualizados correctamente';
-          },
+  this.mensaje = 'Datos actualizados correctamente';
+  // Si el backend responde con la nueva URL de la imagen:
+  if (res.imagen) {
+    this.foto = res.imagen;
+    // Actualiza también en localStorage
+    const usuarioGuardado = localStorage.getItem('usuario');
+    if (usuarioGuardado) {
+      const usuario = JSON.parse(usuarioGuardado);
+      usuario.foto = res.imagen;
+      localStorage.setItem('usuario', JSON.stringify(usuario));
+    }
+  }
+},
           error: (err) => {
             this.mensaje = err.error?.mensaje || 'Error al actualizar los datos';
           }
@@ -93,5 +114,14 @@ onImagenSeleccionada(event: any) {
           }
         });
     }
+    this.modalExito = true;
   }
+  irAHome() {
+  this.router.navigate(['/home']);
+}
+
+cerrarModalExito() {
+  this.modalExito = false;
+  this.router.navigate(['/home']);
+}
 }
