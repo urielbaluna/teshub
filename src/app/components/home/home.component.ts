@@ -256,6 +256,9 @@ export class HomeComponent implements OnInit {
       localStorage.removeItem('token');
       this.router.navigate(['/login']);
     }
+      irAlPerfil(): void {
+      this.router.navigate(['/perfil']);
+    }
 
     eliminarCuenta() {
     const matricula = this.usuarioInfoModal.matricula || this.usuario.matricula;

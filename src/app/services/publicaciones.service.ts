@@ -50,6 +50,7 @@ export class PublicacionesService {
       { headers: this.getAuthHeaders() }
     );
   }
+
   comentarPublicacion(id_publi: number, comentario: string, matricula: string): Observable<any> {
     const body = {
       id_publi,
@@ -62,5 +63,19 @@ export class PublicacionesService {
       { headers: this.getAuthHeaders() }
     );
   }
-}
 
+  obtenerPublicacionPorId(id: string): Observable<any> {
+    return this.http.get(
+      `${environment.apiBaseUrl}/api/publicaciones/${id}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  actualizarPublicacion(id: string, publicacion: FormData): Observable<any> {
+    return this.http.put(
+      `${environment.apiBaseUrl}/api/publicaciones/${id}`,
+      publicacion,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+}

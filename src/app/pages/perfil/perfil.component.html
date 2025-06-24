@@ -1,0 +1,34 @@
+<div class="perfil-container">
+
+  <div class="perfil-header" style="position: relative;">
+    <img [src]="usuario.foto || 'assets/default-user.png'" alt="Foto de perfil" class="foto-perfil">
+    <div class="datos-usuario">
+      <h2 class="nombre">{{ usuario.nombre }} {{ usuario.apellidos }}</h2>
+      <p class="rol">{{ usuario.rol }}</p>
+    </div>
+
+    <!-- Botón dentro del recuadro de datos del usuario -->
+    <button (click)="cerrarVerPerfil()" class="btn-cerrar-modal"
+      style="position: absolute; top: 18px; right: 18px; background: transparent; border: none; cursor: pointer; z-index: 10;">
+      <i class="fi fi-rr-notdef" style="font-size: 28px; color: #888;"></i>
+    </button>
+  </div>
+
+  <div class="proyectos-section">
+    <h3>Mis proyectos:</h3>
+
+    <div *ngFor="let proyecto of usuario.proyectos" class="proyecto-card">
+      <div class="nombre-proyecto">{{ proyecto.nombre }}</div>
+      <div class="proyecto-info">
+        <i class="icon icon-file"></i>
+        <i class="icon icon-delete"></i>
+        <span class="fecha">Hace {{ proyecto.tiempo }}</span>
+        <span class="estrellas">
+          <ng-container *ngFor="let star of [].constructor(proyecto.estrellas)">
+            ⭐
+          </ng-container>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

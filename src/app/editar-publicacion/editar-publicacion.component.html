@@ -1,0 +1,81 @@
+<div class="crear-publicacion-container" style="position:relative;">
+  <!-- Puedes quitar este botón o redirigir -->
+  <!-- Botón para regresar (opcional) -->
+  <button (click)="cerrarModalExito()" class="btn-cerrar-modal" style="position:absolute;top:18px;right:18px;background:transparent;border:none;cursor:pointer;z-index:10;">
+    <i class="fi fi-rr-notdef" style="font-size:28px;color:#888;"></i>
+  </button>
+
+  <h2 class="titulo-verde">EDITAR PUBLICACIÓN</h2>
+  <form (ngSubmit)="actualizarPublicacion()" #formPub="ngForm">
+    <label for="titulo">Título:</label>
+    <input id="titulo" type="text" class="input-publicacion" placeholder="Título de la publicación" [(ngModel)]="titulo" name="titulo">
+
+    <label for="colaboradores">Colaboradores:</label>
+    <input id="colaboradores" type="text" class="input-publicacion" placeholder="Nombres de los colaboradores" [(ngModel)]="colaboradores" name="colaboradores">
+
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" class="input-publicacion" rows="4" placeholder="Descripción de la publicación" [(ngModel)]="descripcion" name="descripcion"></textarea>
+
+    <div class="subir-archivos">
+      <label>Añadir archivos</label>
+      <div class="dropzone" (click)="fileInput.click()">
+        <i class="fi fi-rr-folder-upload" style="font-size:48px;"></i>
+        <input
+          #fileInput
+          type="file"
+          multiple
+          accept=".jpg,.jpeg,.png,.gif,.bmp,.pdf,.doc,.docx,.ppt,.pptx,.txt,.xls,.xlsx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf,image/*"
+          style="display:none"
+          (change)="onFilesSelected($event)"
+        >
+      </div>
+      <div class="lista-archivos">
+        <div *ngFor="let archivo of archivosSeleccionados; let i = index" style="display:flex;align-items:center;gap:8px;">
+          <button type="button" (click)="eliminarArchivo(i)" style="background:transparent;border:none;cursor:pointer;">
+            <i class="fi fi-rr-trash" style="color:#ff4d4d;font-size:20px;"></i>
+          </button>
+          <span style="cursor:pointer;color:#2ca646;text-decoration:underline;" (click)="verArchivo(archivo)">
+            {{ archivo.name }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL PARA VISTA PREVIA DE ARCHIVOS -->
+    <div *ngIf="modalVisible">
+      <!-- Modal grande para documentos -->
+      <div *ngIf="archivoPreviewTipo === 'application/pdf' || archivoPreviewTipo?.includes('word') || archivoPreviewTipo?.includes('excel') || archivoPreviewTipo?.includes('powerpoint')" class="modal-backdrop-full" (click)="cerrarModal()">
+        <div class="modal-content-full" (click)="$event.stopPropagation()" style="position:relative;">
+          <button (click)="cerrarModal()" class="btn-cerrar-modal">
+            <i class="fi fi-rr-notdef" style="font-size:32px;color:#888;"></i>
+          </button>
+          <h3 style="margin-top:48px;">{{ archivoPreviewNombre }}</h3>
+          <iframe [src]="archivoPreviewUrl" style="width:90vw;height:80vh;" frameborder="0"></iframe>
+        </div>
+      </div>
+
+      <!-- Modal para imágenes -->
+      <div *ngIf="archivoPreviewTipo?.startsWith('image/')" class="modal-backdrop" (click)="cerrarModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()" style="position:relative;">
+          <button (click)="cerrarModal()" class="btn-cerrar-modal">
+            <i class="fi fi-rr-notdef" style="font-size:28px;color:#888;"></i>
+          </button>
+          <h3 style="margin-top:32px;">{{ archivoPreviewNombre }}</h3>
+          <img [src]="archivoPreviewUrl" style="max-width:70vw;max-height:60vh;">
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL ÉXITO -->
+    <div *ngIf="modalExito" class="modal-backdrop">
+      <div class="modal-content" style="min-width:300px;text-align:center;">
+        <h3 style="margin:24px 0 12px 0;">¡Publicación actualizada con éxito!</h3>
+        <button (click)="cerrarModalExito()" style="margin:18px auto 0 auto;display:block;background:#2ca646;color:#fff;border:none;border-radius:8px;padding:8px 24px;font-weight:bold;cursor:pointer;">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-publicar">ACTUALIZAR</button>
+  </form>
+</div>
