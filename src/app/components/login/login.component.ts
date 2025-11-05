@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from 'src/enviroments/enviroment';
 
 @Component({
   selector: 'app-login',
@@ -19,10 +20,12 @@ export class LoginComponent {
       contrasena: this.contrasena
     };
 
-    this.http.post('http://18.191.67.127:3000/api/usuarios/login', datos)
+    this.http.post(`${environment.apiBaseUrl}/api/usuarios/login`, datos)
   .subscribe({
     next: (respuesta: any) => {
       this.mensaje = 'Login exitoso';
+      
+      
 
       // Normaliza los datos para el home
       const usuario = {
@@ -33,9 +36,11 @@ export class LoginComponent {
         publicaciones: 0, // Puedes calcularlo después
         destacada: respuesta.destacada || '', // Si existe
         rol: respuesta.rol || 'Estudiante',   // Si existe
-        foto: respuesta.imagen && respuesta.imagen.trim() !== '' ? respuesta.imagen : 'assets/img/brian.png',
+        foto: 'assets/img/brian.png',
         token: respuesta.token
+        
       };
+      
 
       localStorage.setItem('usuario', JSON.stringify(usuario));
       localStorage.setItem('token', respuesta.token);
@@ -47,6 +52,7 @@ export class LoginComponent {
       console.error(error);
     }
   });
+  
   }
  
 

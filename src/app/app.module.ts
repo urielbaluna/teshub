@@ -13,6 +13,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CorreorecuperacionComponent } from './components/correorecuperacion/correorecuperacion.component';
 import { HomeComponent } from './components/home/home.component';
 import { CrearPublicacionComponent } from './components/crear-publicacion/crear-publicacion.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
+import { EditarPublicacionComponent } from './editar-publicacion/editar-publicacion.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { CrearPublicacionComponent } from './components/crear-publicacion/crear-
     CrearcuentaComponent,
     CorreorecuperacionComponent,
     HomeComponent,
-    CrearPublicacionComponent
+    CrearPublicacionComponent,
+    PerfilComponent,
+    EditarPublicacionComponent
   ],
   imports: [
     BrowserModule,

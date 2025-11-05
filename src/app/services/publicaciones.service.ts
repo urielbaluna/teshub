@@ -35,6 +35,12 @@ export class PublicacionesService {
       { headers: this.getAuthHeaders() }
     );
   }
+  eliminarPublicacion(id_publi: number) {
+    return this.http.delete(
+      `${environment.apiBaseUrl}/api/publicaciones/eliminar/${id_publi}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
 
   eliminarComentarioPublicacion(id_publi: number, comentario: string, matricula: string) {
     const body = { id_publi, comentario, matricula };
@@ -44,6 +50,7 @@ export class PublicacionesService {
       { headers: this.getAuthHeaders() }
     );
   }
+
   comentarPublicacion(id_publi: number, comentario: string, matricula: string): Observable<any> {
     const body = {
       id_publi,
@@ -56,5 +63,19 @@ export class PublicacionesService {
       { headers: this.getAuthHeaders() }
     );
   }
-}
 
+  obtenerPublicacionPorId(id: string): Observable<any> {
+    return this.http.get(
+      `${environment.apiBaseUrl}/api/publicaciones/${id}`,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  actualizarPublicacion(id: string, publicacion: FormData): Observable<any> {
+    return this.http.put(
+      `${environment.apiBaseUrl}/api/publicaciones/${id}`,
+      publicacion,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+}

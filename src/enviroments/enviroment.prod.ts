@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://18.191.67.127:3000'
+  apiBaseUrl: 'https://teshub-api-500177fee003.herokuapp.com'
 };

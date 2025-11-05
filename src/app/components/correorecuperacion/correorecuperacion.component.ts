@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/enviroments/enviroment';
 
 @Component({
   selector: 'app-correorecuperacion',
@@ -20,7 +21,7 @@ enviarCorreo() {
    localStorage.setItem('correoRecuperacion', this.correo);
 
 
-  this.http.post('http://18.191.67.127:3000/api/usuarios/codigo-contrasena', {
+  this.http.post(`${environment.apiBaseUrl}/api/usuarios/codigo-contrasena`, {
     correo: this.correo
   })
     .subscribe({

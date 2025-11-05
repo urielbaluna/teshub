@@ -8,16 +8,21 @@ import { CrearcuentaComponent } from './components/crearcuenta/crearcuenta.compo
 import { HomeComponent } from './components/home/home.component';
 import { CrearPublicacionComponent } from './components/crear-publicacion/crear-publicacion.component';
 import { CorreorecuperacionComponent } from './components/correorecuperacion/correorecuperacion.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
+import { EditarPublicacionComponent } from './editar-publicacion/editar-publicacion.component';
+
 
 const routes: Routes = [
   { path: 'recuperacion', component: RecuperacionComponent  },
   { path: 'login', component: LoginComponent },
   { path: 'actualizarcontrasena', component: ActualizarcontrasenaComponent },
   { path: 'actualizardatos', component: ActualizardatosComponent },
-  {path: 'crearcuenta', component: CrearcuentaComponent },
-  {path: 'correorecuperacion', component: CorreorecuperacionComponent },
+  { path: 'crearcuenta', component: CrearcuentaComponent },
+  { path: 'correorecuperacion', component: CorreorecuperacionComponent },
   { path: 'home', component: HomeComponent },
   { path: 'crear-publicacion', component: CrearPublicacionComponent },
+  { path: 'perfil/:matricula', component: PerfilComponent },
+  { path: 'editar-publicacion/:id', component: EditarPublicacionComponent },
   
   { path: '', redirectTo: '/login', pathMatch: 'full' }
   
