@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/enviroments/enviroment';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class ActualizarcontrasenaComponent {
       return;
     }
 
-    this.http.put('http://18.191.67.127:3000/api/usuarios/actualizar-contrasena', {
+    this.http.put(`${environment.apiBaseUrl}/api/usuarios/actualizar-contrasena`, {
       correo: this.correo,
       codigo: this.codigo,
       nuevaContrasena: this.contrasena1

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PerfilService } from 'src/app/services/perfil.service';
+import { environment } from 'src/enviroments/enviroment';
 
 @Component({
   selector: 'app-perfil',
@@ -30,7 +31,7 @@ export class PerfilComponent implements OnInit {
       next: (resp) => {
         this.usuario = {
           matricula: resp.matricula,
-          imagen: resp.imagen ? `http://18.191.67.127:3000/${resp.imagen}` : 'assets/default-user.png',
+          imagen: resp.imagen ? `${environment.apiBaseUrl}/${resp.imagen}` : 'assets/default-user.png',
           nombre: resp.nombre,
           apellido: resp.apellido,
           rol: resp.rol,

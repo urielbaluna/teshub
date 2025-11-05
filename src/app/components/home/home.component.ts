@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { PublicacionesService } from '../../services/publicaciones.service';
 import { UsuariosService } from '../../services/usuario.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/enviroments/enviroment';
 
 @Component({
   selector: 'app-home',
@@ -64,7 +65,7 @@ ngOnInit() {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
-    this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+    this.http.get(`${environment.apiBaseUrl}/api/usuarios/ver-info`, { headers })
       .subscribe((info: any) => {
         this.usuario = {
           nombre: info.nombre,
@@ -73,7 +74,7 @@ ngOnInit() {
           matricula: info.matricula,
           rol: info.rol,
           imagen: info.imagen
-            ? `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`
+            ? `${environment.apiBaseUrl}${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`
             : 'assets/default-user.png',
           total_publicaciones: info.total_publicaciones,
           publicacion_destacada: info.publicacion_destacada
@@ -95,12 +96,12 @@ ngOnInit() {
       const headers = new HttpHeaders({
         Authorization: `Bearer ${token}`
       });
-      this.http.get('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+      this.http.get(`${environment.apiBaseUrl}/api/usuarios/ver-info`, { headers })
         .subscribe((info: any) => {
           this.usuarioInfoModal = {
             ...info,
             imagen: info.imagen
-              ? `http://18.191.67.127:3000${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`
+              ? `${environment.apiBaseUrl}${info.imagen.startsWith('/') ? '' : '/'}${info.imagen}`
               : 'assets/img/brian.png'
           };
           this.mostrarModalPerfil = true;
@@ -234,7 +235,7 @@ ngOnInit() {
   }
 
   getUrlArchivo(archivo: string): string {
-    return `http://18.191.67.127:3000/${archivo}`;
+    return `${environment.apiBaseUrl}/${archivo}`;
   }
 
   getNombreArchivo(archivo: string): string {
@@ -292,7 +293,7 @@ ngOnInit() {
       this.perfiles = [];
       return;
     }
-    this.http.get<any>(`http://18.191.67.127:3000/api/buscar?palabra=${encodeURIComponent(palabra)}`)
+    this.http.get<any>(`${environment.apiBaseUrl}/api/buscar?palabra=${encodeURIComponent(palabra)}`)
       .subscribe({
         next: (resp) => {
           this.publicaciones = resp.publicaciones || [];

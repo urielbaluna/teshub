@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from 'src/enviroments/enviroment';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +27,7 @@ export class CrearcuentaComponent {
       contrasena: this.contrasena,
     };
 
-    this.http.post('http://18.191.67.127:3000/api/usuarios/registrar', datos)
+    this.http.post(`${environment.apiBaseUrl}/api/usuarios/registrar`, datos)
       .subscribe({
         next: (respuesta: any) => {
           this.mensaje = 'Cuenta creada exitosamente';

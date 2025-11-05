@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from 'src/enviroments/enviroment';
 
 @Component({
   selector: 'app-actualizardatos',
@@ -24,13 +25,13 @@ export class ActualizardatosComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-      this.http.get<any>('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+      this.http.get<any>(`${environment.apiBaseUrl}/api/usuarios/ver-info`, { headers })
         .subscribe({
           next: (info) => {
             this.nombre = info.nombre || '';
             this.apellido = info.apellido || '';
             this.correo = info.correo || '';
-            this.foto = info.imagen ? `http://18.191.67.127:3000/${info.imagen}` : 'assets/img/brian.png';
+            this.foto = info.imagen ? `${environment.apiBaseUrl}/${info.imagen}` : 'assets/img/brian.png';
           },
           error: () => {
             this.mensaje = 'No se pudo cargar la información del usuario.';
@@ -86,7 +87,7 @@ export class ActualizardatosComponent implements OnInit {
         console.log(pair[0]+ ':', pair[1]);
       }
 
-      this.http.put('http://18.191.67.127:3000/api/usuarios/actualizar', formData, { headers })
+      this.http.put(`${environment.apiBaseUrl}/api/usuarios/actualizar`, formData, { headers })
         .subscribe({
           next: () => {
             this.mensaje = 'Datos actualizados correctamente';
@@ -98,7 +99,7 @@ export class ActualizardatosComponent implements OnInit {
           }
         });
     } else {
-      this.http.put('http://18.191.67.127:3000/api/usuarios/actualizar', body, { headers })
+      this.http.put(`${environment.apiBaseUrl}/api/usuarios/actualizar`, body, { headers })
         .subscribe({
           next: () => {
             this.mensaje = 'Datos actualizados correctamente';
@@ -116,10 +117,10 @@ export class ActualizardatosComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-      this.http.get<any>('http://18.191.67.127:3000/api/usuarios/ver-info', { headers })
+      this.http.get<any>(`${environment.apiBaseUrl}/api/usuarios/ver-info`, { headers })
         .subscribe({
           next: (info) => {
-            this.foto = info.imagen ? `http://18.191.67.127:3000/${info.imagen}` : 'assets/img/brian.png';
+            this.foto = info.imagen ? `${environment.apiBaseUrl}/${info.imagen}` : 'assets/img/brian.png';
           }
         });
     }

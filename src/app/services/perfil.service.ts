@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PerfilService {
-  private apiUrl = 'http://18.191.67.127:3000/api/usuarios/ver-info-publicaciones';
+  private apiUrl = 'http://192.168.0.150:3000/api/usuarios/ver-info-publicaciones';
 
   constructor(private http: HttpClient) {}
 
